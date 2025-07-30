@@ -26,12 +26,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _passwordVisible = false;
-
+  bool _confirmPasswordVisible = false;
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
-
+    _confirmPasswordVisible = false;
   }
 
   @override
@@ -114,7 +114,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     validator: Validators.validatePassword,
                   ),
-                 
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: !_confirmPasswordVisible,
+                    decoration: InputDecoration(
+                      hintText: 'Confirm Password',
+                      suffixIcon: PasswordVisibilityIcon(
+                        isVisible: _confirmPasswordVisible,
+                        onTap: () {
+                          setState(() {
+                            _confirmPasswordVisible = !_confirmPasswordVisible;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Confirm your password';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
 
                   SizedBox(height: 20),
 
