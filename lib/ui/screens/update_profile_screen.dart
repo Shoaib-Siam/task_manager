@@ -1,7 +1,7 @@
-import 'package:flutter/gestures.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:task_manager/ui/screens/sign_in_screen.dart';
+
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
 import '../utils/PasswordVisibilityIcon.dart';
@@ -30,12 +30,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   XFile? _selectedImage;
 
   bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
+
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
-    _confirmPasswordVisible = false;
+
   }
 
   @override
@@ -122,35 +122,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     validator: Validators.validatePassword,
                   ),
                   SizedBox(height: 10),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: !_confirmPasswordVisible,
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                      suffixIcon: PasswordVisibilityIcon(
-                        isVisible: _confirmPasswordVisible,
-                        onTap: () {
-                          setState(() {
-                            _confirmPasswordVisible = !_confirmPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
+
 
                   SizedBox(height: 20),
 
                   ElevatedButton(
-                    onPressed: _onTapSignUpButton,
+                    onPressed: _onTapSubmitButton,
                     child: Icon(Icons.arrow_forward_rounded),
                   ),
 
@@ -216,14 +193,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-  void _onTapSignUpButton() {
+  void _onTapSubmitButton() {
     if (_formKey.currentState!.validate()) {
       // TODO: Sign Up with API
     }
-  }
-
-  void _onTapSignInButton() {
-    Navigator.pushNamed(context, SignInScreen.routeName);
   }
 
   @override
