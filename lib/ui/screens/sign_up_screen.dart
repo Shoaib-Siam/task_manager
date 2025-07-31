@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
 import '../utils/PasswordVisibilityIcon.dart';
 import '../utils/validators.dart';
+import '../widgets/snack_bar_message.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -21,17 +24,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _mobileNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _signUPInProgress = false;
 
   bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
+
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
-    _confirmPasswordVisible = false;
   }
 
   @override
@@ -91,8 +93,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(hintText: 'Mobile Number'),
                     validator: (String? value) {
-                      if (value?.trim().isEmpty ?? true) {
+                      if (value == null || value.trim().isEmpty) {
                         return 'Enter your mobile number';
+                      }
+                      if (!RegExp(r'^\d{10,15}$').hasMatch(value.trim())) {
+                        return 'Enter a valid mobile number';
                       }
                       return null;
                     },
@@ -114,43 +119,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     validator: Validators.validatePassword,
                   ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: !_confirmPasswordVisible,
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                      suffixIcon: PasswordVisibilityIcon(
-                        isVisible: _confirmPasswordVisible,
-                        onTap: () {
-                          setState(() {
-                            _confirmPasswordVisible = !_confirmPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
 
                   SizedBox(height: 20),
 
-                  ElevatedButton(
-                    onPressed: _onTapSignUpButton,
-                    child: Icon(Icons.arrow_forward_rounded),
+                  Visibility(
+                    visible:
+                        _signUPInProgress == false, //signup button will visible
+                    replacement: Center(
+                      child:
+                          CircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _signUPInProgress ? null : _onTapSignUpButton,
+                      child: Icon(Icons.arrow_forward_rounded),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
                     child: RichText(
                       text: TextSpan(
-                        text: "Already have an account?",
+                        text: "Already have an account? ",
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
@@ -183,9 +171,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onTapSignUpButton() {
     if (_formKey.currentState!.validate()) {
-      // TODO: Sign Up with API
+      _signUp();
     }
+  }
 
+  Future<void> _signUp() async {
+    _signUPInProgress = true;
+    setState(() {});
+    Map<String, String> requestBody = {
+      'email': _emailController.text.trim(),
+      'firstName': _firstNameController.text.trim(),
+      'lastName': _lastNameController.text.trim(),
+      'mobileNumber': _mobileNumberController.text.trim(),
+      'password': _passwordController.text,
+    };
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.registrationUrl, body: requestBody,
+    );
+    _signUPInProgress = false;
+    setState(() {
+      
+    });
+
+    if (response.success) {
+      _clearTextFields();
+      showSnackBarMessage(context, 'Registration Successful');
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+      });
+    }
+    else {
+      showSnackBarMessage(context, response.errorMessage.isNotEmpty
+          ? response.errorMessage
+          : 'Registration failed. Please try again.');
+
+    }
+  }
+
+  void _clearTextFields(){
+    _emailController.clear();
+    _firstNameController.clear();
+    _lastNameController.clear();
+    _mobileNumberController.clear();
+    _passwordController.clear();
   }
 
   void _onTapSignInButton() {
@@ -199,7 +227,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _lastNameController.dispose();
     _mobileNumberController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 }

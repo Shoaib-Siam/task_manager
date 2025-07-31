@@ -94,7 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "Don't have an account?",
+                            text: "Don't have an account? ",
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,

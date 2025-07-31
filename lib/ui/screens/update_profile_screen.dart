@@ -22,19 +22,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _mobileNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ImagePicker _imagePicker = ImagePicker();
   XFile? _selectedImage;
 
   bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
+
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
-    _confirmPasswordVisible = false;
+
   }
 
   @override
@@ -120,31 +119,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     ),
                     validator: Validators.validatePassword,
                   ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: !_confirmPasswordVisible,
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                      suffixIcon: PasswordVisibilityIcon(
-                        isVisible: _confirmPasswordVisible,
-                        onTap: () {
-                          setState(() {
-                            _confirmPasswordVisible = !_confirmPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Confirm your password';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
+
 
                   SizedBox(height: 20),
 
@@ -228,7 +203,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _lastNameController.dispose();
     _mobileNumberController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 }
