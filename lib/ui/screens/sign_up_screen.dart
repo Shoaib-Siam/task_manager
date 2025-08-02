@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
+import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
 import '../../data/service/network_caller.dart';
@@ -125,10 +126,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Visibility(
                     visible:
                         _signUPInProgress == false, //signup button will visible
-                    replacement: Center(
-                      child:
-                          CircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
-                    ),
+                    replacement:
+                        CenteredCircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
+
                     child: ElevatedButton(
                       onPressed: _signUPInProgress ? null : _onTapSignUpButton,
                       child: Icon(Icons.arrow_forward_rounded),
@@ -186,12 +186,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'password': _passwordController.text,
     };
     NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.registrationUrl, body: requestBody,
+      url: Urls.registrationUrl,
+      body: requestBody,
     );
     _signUPInProgress = false;
-    setState(() {
-      
-    });
+    setState(() {});
 
     if (response.success) {
       _clearTextFields();
@@ -199,16 +198,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Future.delayed(Duration(seconds: 1), () {
         Navigator.pushReplacementNamed(context, SignInScreen.routeName);
       });
-    }
-    else {
-      showSnackBarMessage(context, response.errorMessage.isNotEmpty
-          ? response.errorMessage
-          : 'Registration failed. Please try again.');
-
+    } else {
+      showSnackBarMessage(
+        context,
+        response.errorMessage.isNotEmpty
+            ? response.errorMessage
+            : 'Registration failed. Please try again.',
+      );
     }
   }
 
-  void _clearTextFields(){
+  void _clearTextFields() {
     _emailController.clear();
     _firstNameController.clear();
     _lastNameController.clear();
