@@ -1,6 +1,6 @@
 # task_manager
 
-Task Manager Project
+Task Manager Project With Flutter
 
 ## Version
 
