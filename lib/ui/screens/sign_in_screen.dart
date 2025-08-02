@@ -159,6 +159,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
 
     if (response.success) {
+      showSnackBarMessage(context, 'Sign in Successful');
       Navigator.pushNamedAndRemoveUntil(
         context,
         MainNavHolderScreen.routeName,
