@@ -1,11 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/user_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
 import '../../data/urls.dart';
+import '../controllers/auth_controller.dart';
 import '../utils/validators.dart';
 import '../widgets/snack_bar_message.dart';
 import 'forgot_password_email_screen.dart';
@@ -55,6 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   TextFormField(
                     controller: _emailController,
                     textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(hintText: 'Email'),
                     validator: Validators.validateEmail,
                   ),
@@ -88,7 +91,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     replacement:
                         CenteredCircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
                     child: ElevatedButton(
-                      onPressed: _onTapSignInButton,
+                      onPressed: _signInInProgress ? null : _onTapSignInButton,
                       child: Icon(Icons.arrow_forward_rounded),
                     ),
                   ),
@@ -157,8 +160,18 @@ class _SignInScreenState extends State<SignInScreen> {
       url: Urls.loginUrl,
       body: requestBody,
     );
+    _signInInProgress = false;
+    setState(() {});
 
     if (response.success) {
+      _emailController.clear();
+      _passwordController.clear();
+
+      UserModel userModel = UserModel.fromJson(response.body['data']);
+      String token = response.body['token'];
+
+      await AuthController.saveUserData(userModel, token);
+
       showSnackBarMessage(context, 'Sign in Successful');
       Navigator.pushNamedAndRemoveUntil(
         context,
@@ -166,7 +179,6 @@ class _SignInScreenState extends State<SignInScreen> {
         (predicate) => false,
       );
     } else {
-      _signInInProgress = false;
       showSnackBarMessage(
         context,
         response.errorMessage.isNotEmpty
