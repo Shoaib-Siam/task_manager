@@ -8,7 +8,7 @@ class UserModel{
   String get fullName => '$firstName $lastName';
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
+    id = json['id'];
     email = json['email'];
     firstName = json['firstName'];
     lastName = json['lastName'];
