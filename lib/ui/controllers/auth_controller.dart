@@ -41,6 +41,5 @@ class AuthController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('user-data');
     await prefs.remove('token');
-    userModel = null;
   }
 }
