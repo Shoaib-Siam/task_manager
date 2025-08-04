@@ -39,7 +39,7 @@ class AuthController {
 
   static Future<void> clearUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user-data');
-    await prefs.remove('token');
+    await prefs.remove(_userDataKey);
+    await prefs.remove(_tokenKey);
   }
 }
