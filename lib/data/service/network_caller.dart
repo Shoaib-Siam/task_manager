@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
+import 'package:task_manager/ui/controllers/auth_controller.dart';
 
 class NetworkResponse {
   final bool success;
@@ -24,7 +25,7 @@ class NetworkCaller {
       Uri uri = Uri.parse(url);
       Response response = await get(uri);
 
-      _logRequest('GET', url, null);
+      _logRequest('GET', url, null, null);
       _logResponse(url, response);
 
       if (response.statusCode == 200) {
@@ -62,13 +63,14 @@ class NetworkCaller {
       Uri uri = Uri.parse(url);
       final encodedBody = jsonEncode(body);
 
-      _logRequest('POST', url, body);
+      final Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'token': AuthController.accessToken?? '',
+      };
 
-      Response response = await post(
-        uri,
-        body: encodedBody,
-        headers: {'Content-Type': 'application/json'},
-      );
+      _logRequest('POST', url, body, headers);
+
+      Response response = await post(uri, body: encodedBody, headers: headers);
 
       _logResponse(url, response);
 
@@ -99,19 +101,29 @@ class NetworkCaller {
     }
   }
 
-  static void _logRequest(String method, String url, Map<String, String>? body) {
-    debugPrint('========== Request =========='
-        '\nMethod: $method'
-        '\nURL: $url'
-        '\nBody: ${body?.toString() ?? 'No body'}'
-        '\n=============================');
+  static void _logRequest(
+    String method,
+    String url,
+    Map<String, String>? body,
+    Map<String, String>? headers,
+  ) {
+    debugPrint(
+      '========== Request =========='
+      '\nMethod: $method'
+      '\nURL: $url'
+      '\nHeaders: ${headers?.toString() ?? 'No headers'}'
+      '\nBody: ${body?.toString() ?? 'No body'}'
+      '\n=============================',
+    );
   }
 
   static void _logResponse(String url, Response response) {
-    debugPrint('========== Response =========='
-        '\nURL: $url'
-        '\nStatus Code: ${response.statusCode}'
-        '\nBody: ${response.body}'
-        '\n==============================');
+    debugPrint(
+      '========== Response =========='
+      '\nURL: $url'
+      '\nStatus Code: ${response.statusCode}'
+      '\nBody: ${response.body}'
+      '\n==============================',
+    );
   }
 }
