@@ -3,6 +3,10 @@ class Urls {
   static const String registrationUrl = '$_baseurl/Registration';
   static const String loginUrl = '$_baseurl/Login';
   static const String createNewTaskUrl = '$_baseurl/CreateTask';
+  static const String newTasksUrl = '$_baseurl/listTaskByStatus/New';
+  static const String progressTasksUrl = '$_baseurl/listTaskByStatus/Progress';
+
+
 
 
 }

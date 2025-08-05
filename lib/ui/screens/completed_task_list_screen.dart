@@ -17,9 +17,9 @@ class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {
       child: ListView.builder(
         itemCount: 10,
         itemBuilder: (context, index) {
-          return TaskCard(
-            taskType: TaskType.Completed,
-          );
+          // return TaskCard(
+          //   taskType: TaskType.Completed,
+          // );
         },
       ),
     );

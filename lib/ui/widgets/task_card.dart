@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/task_model.dart';
+
 enum TaskType {
   New,
   Progress,
@@ -8,9 +10,10 @@ enum TaskType {
 }
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({super.key, required this.taskType});
+  const TaskCard({super.key, required this.taskType, required this.taskModel});
 
   final TaskType taskType;
+  final TaskModel taskModel;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -22,14 +25,14 @@ class TaskCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Title Will Be Here',
+              taskModel.title,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
-              'Description Will Be Here',
+              taskModel.description,
               style: TextStyle(color: Colors.grey),
             ),
-            Text('Date: 12/12/12'),
+            Text('Date: ${taskModel.createdDate}'),
             SizedBox(height: 8),
             Row(
               children: [
