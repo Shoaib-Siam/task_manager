@@ -45,6 +45,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                 separatorBuilder: (context, index) => const SizedBox(width: 8),
               ),
             ),
+
             Expanded(
               child: Visibility(
                 visible: _newTasksInProgress == false,

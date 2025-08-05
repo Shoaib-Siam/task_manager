@@ -89,6 +89,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     if (_formKey.currentState!.validate()) {
       _addNewTask();
     }
+
     //uNavigator.pop(context);
   }
 

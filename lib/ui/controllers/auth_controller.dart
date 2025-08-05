@@ -43,5 +43,6 @@ class AuthController {
     await prefs.remove(_tokenKey);
     userModel = null;
     accessToken = null;
+
   }
 }

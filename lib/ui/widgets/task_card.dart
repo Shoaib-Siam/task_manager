@@ -50,6 +50,7 @@ class TaskCard extends StatelessWidget {
                 IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
               ],
             ),
+
           ],
         ),
       ),

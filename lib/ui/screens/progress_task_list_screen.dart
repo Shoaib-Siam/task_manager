@@ -67,5 +67,6 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
     }
     _progressTasksInProgress = false;
     setState(() {});
+
   }
 }
