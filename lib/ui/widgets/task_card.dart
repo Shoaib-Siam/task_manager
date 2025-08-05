@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/task_model.dart';
 
-enum TaskType {
-  New,
-  Progress,
-  Completed,
-  Canceled,
-}
+enum TaskType { New, Progress, Completed, Canceled }
 
 class TaskCard extends StatelessWidget {
   const TaskCard({super.key, required this.taskType, required this.taskModel});
@@ -28,16 +23,16 @@ class TaskCard extends StatelessWidget {
               taskModel.title,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text(
-              taskModel.description,
-              style: TextStyle(color: Colors.grey),
-            ),
+            Text(taskModel.description, style: TextStyle(color: Colors.grey)),
             Text('Date: ${taskModel.createdDate}'),
             SizedBox(height: 8),
             Row(
               children: [
                 Chip(
-                  label: Text(_getTaskTypeName(), style: TextStyle(color: Colors.white)),
+                  label: Text(
+                    _getTaskTypeName(),
+                    style: TextStyle(color: Colors.white),
+                  ),
                   backgroundColor: _getTaskChipColor(),
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   shape: RoundedRectangleBorder(
@@ -50,15 +45,14 @@ class TaskCard extends StatelessWidget {
                 IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
               ],
             ),
-
           ],
         ),
       ),
     );
   }
-  Color _getTaskChipColor(){
 
-    switch (taskType){
+  Color _getTaskChipColor() {
+    switch (taskType) {
       case TaskType.New:
         return Colors.blue;
       case TaskType.Progress:
@@ -69,9 +63,9 @@ class TaskCard extends StatelessWidget {
         return Colors.red;
     }
   }
-  String _getTaskTypeName(){
-    switch (taskType){
 
+  String _getTaskTypeName() {
+    switch (taskType) {
       case TaskType.New:
         return 'New';
       case TaskType.Progress:

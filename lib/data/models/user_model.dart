@@ -1,4 +1,4 @@
-class UserModel{
+class UserModel {
   late String id;
   late String email;
   late String firstName;
@@ -13,7 +13,6 @@ class UserModel{
     firstName = json['firstName'];
     lastName = json['lastName'];
     mobileNumber = json['mobile'];
-
   }
   Map<String, dynamic> toJson() {
     return {
@@ -24,6 +23,4 @@ class UserModel{
       'mobile': mobileNumber,
     };
   }
-
-
 }

@@ -28,11 +28,10 @@ class AuthController {
   static Future<bool> isUserLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString(_tokenKey);
-    if(token != null){
+    if (token != null) {
       await getUserData();
       return true;
-
-    }else{
+    } else {
       return false;
     }
   }
@@ -43,6 +42,5 @@ class AuthController {
     await prefs.remove(_tokenKey);
     userModel = null;
     accessToken = null;
-
   }
 }

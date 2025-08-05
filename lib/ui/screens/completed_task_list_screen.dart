@@ -6,7 +6,8 @@ class CompletedTaskListScreen extends StatefulWidget {
   const CompletedTaskListScreen({super.key});
 
   @override
-  State<CompletedTaskListScreen> createState() => _CompletedTaskListScreenState();
+  State<CompletedTaskListScreen> createState() =>
+      _CompletedTaskListScreenState();
 }
 
 class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {

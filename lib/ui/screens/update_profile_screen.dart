@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
@@ -33,7 +32,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void initState() {
     super.initState();
     _passwordVisible = false;
-
   }
 
   @override
@@ -120,14 +118,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     validator: Validators.validatePassword,
                   ),
 
-
                   SizedBox(height: 20),
 
                   ElevatedButton(
                     onPressed: _onTapSubmitButton,
                     child: Icon(Icons.arrow_forward_rounded),
                   ),
-
                 ],
               ),
             ),
@@ -169,10 +165,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ),
             ),
             SizedBox(width: 10),
-            Text(_selectedImage == null ? 'Add Photo' : _selectedImage!.name, maxLines: 1,
-            style: TextStyle(
-              overflow: TextOverflow.ellipsis,
-            ),)
+            Text(
+              _selectedImage == null ? 'Add Photo' : _selectedImage!.name,
+              maxLines: 1,
+              style: TextStyle(overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),
@@ -184,7 +181,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final XFile? pickedImage = await _imagePicker.pickImage(
       source: ImageSource.gallery,
     );
-    if (pickedImage != null){
+    if (pickedImage != null) {
       _selectedImage = pickedImage;
       setState(() {});
     }

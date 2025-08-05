@@ -5,7 +5,6 @@ class TaskModel {
   late String status;
   late String createdDate;
 
-
   TaskModel.fromJson(Map<String, dynamic> jsonData) {
     id = jsonData['_id'];
     title = jsonData['title'];

@@ -23,6 +23,7 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
     super.initState();
     _getProgressTaskList();
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -67,6 +68,5 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
     }
     _progressTasksInProgress = false;
     setState(() {});
-
   }
 }

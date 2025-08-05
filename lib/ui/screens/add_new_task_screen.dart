@@ -65,7 +65,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     decoration: InputDecoration(hintText: 'Description'),
                   ),
                   const SizedBox(height: 20),
-              
+
                   Visibility(
                     visible: _addNewTaskInProgress == false,
                     replacement: CenteredCircularProgressIndicator(),
