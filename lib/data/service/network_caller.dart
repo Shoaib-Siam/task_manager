@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
 
+import '../../app.dart';
+import '../../ui/screens/sign_in_screen.dart';
+
 class NetworkResponse {
   final bool success;
   final int statusCode;
@@ -19,6 +22,7 @@ class NetworkResponse {
 
 class NetworkCaller {
   static const String _defaultErrorMessage = 'Something went wrong';
+  static const String _unAuthorizedErrorMessage = 'un-authorized';
 
   static Future<NetworkResponse> getRequest({required String url}) async {
     try {
@@ -35,6 +39,16 @@ class NetworkCaller {
           statusCode: response.statusCode,
           body: decodedJson,
           errorMessage: '',
+        );
+      } else if (response.statusCode == 401) {
+        await _onUnAuthorized();
+        final decodedJson = jsonDecode(response.body);
+        return NetworkResponse(
+          success: false,
+          statusCode: response.statusCode,
+          body: {},
+          errorMessage:
+              decodedJson['data']?.toString() ?? _unAuthorizedErrorMessage,
         );
       } else {
         final decodedJson = jsonDecode(response.body);
@@ -58,6 +72,7 @@ class NetworkCaller {
   static Future<NetworkResponse> postRequest({
     required String url,
     required Map<String, String>? body,
+    bool isFromLogin = false,
   }) async {
     try {
       Uri uri = Uri.parse(url);
@@ -65,7 +80,7 @@ class NetworkCaller {
 
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
-        'token': AuthController.accessToken?? '',
+        'token': AuthController.accessToken ?? '',
       };
 
       _logRequest('POST', url, body, headers);
@@ -81,6 +96,18 @@ class NetworkCaller {
           statusCode: response.statusCode,
           body: decodedJson,
           errorMessage: '',
+        );
+      } else if (response.statusCode == 401) {
+        if (isFromLogin == false) {
+          await _onUnAuthorized();
+        }
+        final decodedJson = jsonDecode(response.body);
+        return NetworkResponse(
+          success: false,
+          statusCode: response.statusCode,
+          body: {},
+          errorMessage:
+              decodedJson['data']?.toString() ?? _unAuthorizedErrorMessage,
         );
       } else {
         final decodedJson = jsonDecode(response.body);
@@ -124,6 +151,15 @@ class NetworkCaller {
       '\nStatus Code: ${response.statusCode}'
       '\nBody: ${response.body}'
       '\n==============================',
+    );
+  }
+
+  static Future<void> _onUnAuthorized() async {
+    await AuthController.clearUserData();
+    Navigator.pushNamedAndRemoveUntil(
+      TaskManagerApp.navigator.currentContext!,
+      SignInScreen.routeName,
+      (predicate) => false,
     );
   }
 }
