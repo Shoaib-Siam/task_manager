@@ -71,8 +71,12 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                           itemCount: _newTaskList.length,
                           itemBuilder: (context, index) {
                             return TaskCard(
-                              taskType: TaskType.New,
+                              taskType: TaskType.tNew,
                               taskModel: _newTaskList[index],
+                              onStatusUpdate: () {
+                                _getNewTaskList();
+                                _getTaskStatusCountList();
+                              },
                             );
                           },
                         ),

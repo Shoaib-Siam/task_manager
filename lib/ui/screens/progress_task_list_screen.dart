@@ -33,15 +33,21 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
       child: Visibility(
         visible: _progressTasksInProgress == false,
         replacement: CenteredCircularProgressIndicator(),
-        child: ListView.builder(
-          itemCount: _progressTaskList.length,
-          itemBuilder: (context, index) {
-            return TaskCard(
-              taskType: TaskType.Progress,
-              taskModel: _progressTaskList[index],
-            );
-          },
-        ),
+        child:
+            _progressTaskList.isEmpty
+                ? const Center(child: Text('No progress tasks found.'))
+                : ListView.builder(
+                  itemCount: _progressTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      taskType: TaskType.progress,
+                      taskModel: _progressTaskList[index],
+                      onStatusUpdate: () {
+                        _getProgressTaskList();
+                      },
+                    );
+                  },
+                ),
       ),
     );
   }

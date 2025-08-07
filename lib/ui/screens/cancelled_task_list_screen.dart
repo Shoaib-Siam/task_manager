@@ -34,15 +34,21 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
       child: Visibility(
         visible: _cancelledTasksInProgress == false,
         replacement: CenteredCircularProgressIndicator(),
-        child: ListView.builder(
-          itemCount: _cancelledTaskList.length,
-          itemBuilder: (context, index) {
-            return TaskCard(
-              taskType: TaskType.Canceled,
-              taskModel: _cancelledTaskList[index],
-            );
-          },
-        ),
+        child:
+            _cancelledTaskList.isEmpty
+                ? const Center(child: Text('No cancelled tasks found.'))
+                : ListView.builder(
+                  itemCount: _cancelledTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      taskType: TaskType.cancelled,
+                      taskModel: _cancelledTaskList[index],
+                      onStatusUpdate: () {
+                        _getCancelledTaskList();
+                      },
+                    );
+                  },
+                ),
       ),
     );
   }
@@ -52,7 +58,7 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
     setState(() {});
 
     NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.progressTasksUrl,
+      url: Urls.cancelledTasksUrl,
     );
 
     if (response.success) {

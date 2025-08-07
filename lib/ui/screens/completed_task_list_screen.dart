@@ -34,15 +34,21 @@ class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {
       child: Visibility(
         visible: _completedTasksInProgress == false,
         replacement: CenteredCircularProgressIndicator(),
-        child: ListView.builder(
-          itemCount: _completedTaskList.length,
-          itemBuilder: (context, index) {
-            return TaskCard(
-              taskType: TaskType.Completed,
-              taskModel: _completedTaskList[index],
-            );
-          },
-        ),
+        child:
+            _completedTaskList.isEmpty
+                ? const Center(child: Text('No completed tasks found.'))
+                : ListView.builder(
+                  itemCount: _completedTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      taskType: TaskType.completed,
+                      taskModel: _completedTaskList[index],
+                      onStatusUpdate: () {
+                        _getCompletedTaskList();
+                      },
+                    );
+                  },
+                ),
       ),
     );
   }
@@ -52,7 +58,7 @@ class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {
     setState(() {});
 
     NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.progressTasksUrl,
+      url: Urls.completedTasksUrl,
     );
 
     if (response.success) {
