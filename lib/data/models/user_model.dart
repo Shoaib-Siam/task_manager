@@ -3,7 +3,8 @@ class UserModel {
   late String email;
   late String firstName;
   late String lastName;
-  late String? mobileNumber;
+  String? mobileNumber;
+  String? photo;
 
   String get fullName => '$firstName $lastName';
 
@@ -13,6 +14,7 @@ class UserModel {
     firstName = jsonData['firstName'];
     lastName = jsonData['lastName'];
     mobileNumber = jsonData['mobile'];
+    photo = jsonData['photo'];
   }
   Map<String, dynamic> toJson() {
     return {
@@ -21,6 +23,7 @@ class UserModel {
       'firstName': firstName,
       'lastName': lastName,
       'mobile': mobileNumber,
+      'photo': photo,
     };
   }
 }

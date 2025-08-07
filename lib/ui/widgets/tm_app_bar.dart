@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/sign_in_screen.dart';
 import '../screens/update_profile_screen.dart';
@@ -24,7 +27,15 @@ class _TMAppBarState extends State<TMAppBar> {
         onTap: _onTapProfile,
         child: Row(
           children: [
-            CircleAvatar(),
+            CircleAvatar(
+              backgroundImage: AuthController.userModel?.photo?.isNotEmpty == true
+                  ? MemoryImage(base64Decode(AuthController.userModel!.photo!))
+                  : null,
+              child: AuthController.userModel?.photo?.isEmpty == true
+                  ? Icon(Icons.person, color: Colors.white)
+                  : null,
+            ),
+
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -58,11 +69,15 @@ class _TMAppBarState extends State<TMAppBar> {
 
   Future<void> _onTapLogoutButton() async {
     await AuthController.clearUserData();
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      SignInScreen.routeName,
-      (predicate) => false,
-    );
+    if (mounted) {
+      showSnackBarMessage(context, 'Logged out successfully');
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        SignInScreen.routeName,
+        (predicate) => false,
+      );
+    }
   }
 
   void _onTapProfile() {

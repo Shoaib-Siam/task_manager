@@ -173,19 +173,24 @@ class _SignInScreenState extends State<SignInScreen> {
 
       await AuthController.saveUserData(userModel, token);
 
-      showSnackBarMessage(context, 'Sign in Successful');
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        MainNavHolderScreen.routeName,
-        (predicate) => false,
-      );
+      if (mounted) {
+        showSnackBarMessage(context, 'Sign in Successful');
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          MainNavHolderScreen.routeName,
+          (predicate) => false,
+        );
+      }
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Sign in failed. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Sign in failed. Please try again.',
+        );
+      }
     }
   }
 

@@ -114,15 +114,19 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     if (response.success) {
       _titleController.clear();
       _descriptionController.clear();
-      showSnackBarMessage(context, 'Task Added Successfully');
-      Navigator.pop(context);
+      if (mounted) {
+        showSnackBarMessage(context, 'Task Added Successfully');
+        Navigator.pop(context);
+      }
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Something went wrong. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
     }
   }
 

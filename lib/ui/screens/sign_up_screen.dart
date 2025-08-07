@@ -182,7 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'email': _emailController.text.trim(),
       'firstName': _firstNameController.text.trim(),
       'lastName': _lastNameController.text.trim(),
-      'mobileNumber': _mobileNumberController.text.trim(),
+      'mobile': _mobileNumberController.text.trim(),
       'password': _passwordController.text,
     };
     NetworkResponse response = await NetworkCaller.postRequest(
@@ -194,17 +194,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (response.success) {
       _clearTextFields();
-      showSnackBarMessage(context, 'Registration Successful');
-      Future.delayed(Duration(seconds: 1), () {
+
+      if (mounted) {
+        showSnackBarMessage(context, 'Registration Successful');
+      }
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (mounted) {
         Navigator.pushReplacementNamed(context, SignInScreen.routeName);
-      });
+      }
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Registration failed. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Registration failed. Please try again.',
+        );
+      }
     }
   }
 
