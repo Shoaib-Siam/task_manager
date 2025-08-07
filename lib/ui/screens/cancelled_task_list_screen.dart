@@ -22,7 +22,9 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
   @override
   void initState() {
     super.initState();
-    _getCancelledTaskList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getCancelledTaskList();
+    });
   }
 
   @override
@@ -70,5 +72,4 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
     _cancelledTasksInProgress = false;
     setState(() {});
   }
-
 }

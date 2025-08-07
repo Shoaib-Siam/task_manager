@@ -22,7 +22,9 @@ class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {
   @override
   void initState() {
     super.initState();
-    _getCompletedTaskList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getCompletedTaskList();
+    });
   }
 
   @override
@@ -70,5 +72,4 @@ class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {
     _completedTasksInProgress = false;
     setState(() {});
   }
-
 }
