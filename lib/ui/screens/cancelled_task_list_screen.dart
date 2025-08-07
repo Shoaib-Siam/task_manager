@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/task_model.dart';
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
+import '../widgets/centered_circular_progress_indicator.dart';
+import '../widgets/snack_bar_message.dart';
 import '../widgets/task_card.dart';
 
 class CancelledTaskListScreen extends StatefulWidget {
@@ -11,18 +16,59 @@ class CancelledTaskListScreen extends StatefulWidget {
 }
 
 class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
+  bool _cancelledTasksInProgress = false;
+  List<TaskModel> _cancelledTaskList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getCancelledTaskList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          // return TaskCard(
-          //   taskType: TaskType.Canceled,
-          // );
-        },
+      child: Visibility(
+        visible: _cancelledTasksInProgress == false,
+        replacement: CenteredCircularProgressIndicator(),
+        child: ListView.builder(
+          itemCount: _cancelledTaskList.length,
+          itemBuilder: (context, index) {
+            return TaskCard(
+              taskType: TaskType.Canceled,
+              taskModel: _cancelledTaskList[index],
+            );
+          },
+        ),
       ),
     );
   }
+
+  Future<void> _getCancelledTaskList() async {
+    _cancelledTasksInProgress = true;
+    setState(() {});
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.progressTasksUrl,
+    );
+
+    if (response.success) {
+      List<TaskModel> taskList = [];
+      for (Map<String, dynamic> jsonData in response.body['data']) {
+        taskList.add(TaskModel.fromJson(jsonData));
+      }
+      _cancelledTaskList = taskList;
+    } else {
+      showSnackBarMessage(
+        context,
+        response.errorMessage.isNotEmpty
+            ? response.errorMessage
+            : 'Something went wrong. Please try again.',
+      );
+    }
+    _cancelledTasksInProgress = false;
+    setState(() {});
+  }
+
 }

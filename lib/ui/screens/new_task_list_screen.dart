@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 
 import '../../data/models/task_model.dart';
+import '../../data/models/task_status_count_model.dart';
 import '../../data/service/network_caller.dart';
 import '../../data/urls.dart';
 import '../widgets/centered_circular_progress_indicator.dart';
@@ -17,13 +18,18 @@ class NewTaskListScreen extends StatefulWidget {
 }
 
 class _NewTaskListScreenState extends State<NewTaskListScreen> {
+  bool _taskStatusCountInProgress = false;
   bool _newTasksInProgress = false;
   List<TaskModel> _newTaskList = [];
+  List<TaskStatusCountModel> _taskStatusCountList = [];
 
   @override
   void initState() {
     super.initState();
-    _getNewTaskList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getTaskStatusCountList();
+      _getNewTaskList();
+    });
   }
 
   @override
@@ -36,13 +42,21 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
             const SizedBox(height: 12),
             SizedBox(
               height: 100,
-              child: ListView.separated(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountSummaryCard(title: 'Progress', count: 10);
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
+              child: Visibility(
+                visible: _taskStatusCountInProgress == false,
+                replacement: CenteredCircularProgressIndicator(),
+                child: ListView.separated(
+                  itemCount: _taskStatusCountList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return TaskCountSummaryCard(
+                      title: _taskStatusCountList[index].id,
+                      count: _taskStatusCountList[index].count,
+                    );
+                  },
+                  separatorBuilder:
+                      (context, index) => const SizedBox(width: 8),
+                ),
               ),
             ),
 
@@ -50,15 +64,18 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
               child: Visibility(
                 visible: _newTasksInProgress == false,
                 replacement: CenteredCircularProgressIndicator(),
-                child: ListView.builder(
-                  itemCount: _newTaskList.length,
-                  itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.New,
-                      taskModel: _newTaskList[index],
-                    );
-                  },
-                ),
+                child:
+                    _newTaskList.isEmpty
+                        ? Center(child: Text('No new tasks found.'))
+                        : ListView.builder(
+                          itemCount: _newTaskList.length,
+                          itemBuilder: (context, index) {
+                            return TaskCard(
+                              taskType: TaskType.New,
+                              taskModel: _newTaskList[index],
+                            );
+                          },
+                        ),
               ),
             ),
           ],
@@ -69,6 +86,36 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _getTaskStatusCountList() async {
+    _taskStatusCountInProgress = true;
+    setState(() {});
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.taskStatusCountUrl,
+    );
+
+    if (response.success) {
+      List<TaskStatusCountModel> taskList = [];
+      for (Map<String, dynamic> jsonData in response.body['data']) {
+        taskList.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+      _taskStatusCountList = taskList;
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
+    }
+    _taskStatusCountInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _getNewTaskList() async {
@@ -86,15 +133,19 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
       }
       _newTaskList = taskList;
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Something went wrong. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
     }
     _newTasksInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _onTapAddNewTaskButton() {

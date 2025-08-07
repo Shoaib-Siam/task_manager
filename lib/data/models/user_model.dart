@@ -7,12 +7,12 @@ class UserModel {
 
   String get fullName => '$firstName $lastName';
 
-  UserModel.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    email = json['email'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    mobileNumber = json['mobile'];
+  UserModel.fromJson(Map<String, dynamic> jsonData) {
+    id = jsonData['_id'];
+    email = jsonData['email'];
+    firstName = jsonData['firstName'];
+    lastName = jsonData['lastName'];
+    mobileNumber = jsonData['mobile'];
   }
   Map<String, dynamic> toJson() {
     return {
