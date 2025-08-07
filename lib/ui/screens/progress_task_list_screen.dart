@@ -61,14 +61,18 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
       }
       _progressTaskList = taskList;
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Something went wrong. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
     }
     _progressTasksInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

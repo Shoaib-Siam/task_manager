@@ -62,14 +62,18 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
       }
       _cancelledTaskList = taskList;
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Something went wrong. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
     }
     _cancelledTasksInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

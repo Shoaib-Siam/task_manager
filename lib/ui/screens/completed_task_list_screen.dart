@@ -62,12 +62,14 @@ class _CompletedTaskListScreenState extends State<CompletedTaskListScreen> {
       }
       _completedTaskList = taskList;
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage.isNotEmpty
-            ? response.errorMessage
-            : 'Something went wrong. Please try again.',
-      );
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
     }
     _completedTasksInProgress = false;
     setState(() {});
