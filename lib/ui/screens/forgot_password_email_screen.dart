@@ -4,7 +4,10 @@ import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
 import '../utils/validators.dart';
+import '../widgets/snack_bar_message.dart';
 
 class ForgotPasswordEmailScreen extends StatefulWidget {
   const ForgotPasswordEmailScreen({super.key});
@@ -19,6 +22,7 @@ class ForgotPasswordEmailScreen extends StatefulWidget {
 class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _verifyEmailInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +59,14 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
 
                   SizedBox(height: 20),
 
-                  ElevatedButton(
-                    onPressed: _onTapSubmitButton,
-                    child: Icon(Icons.arrow_forward_rounded),
+                  Visibility(
+                    visible: _verifyEmailInProgress == false,
+                    replacement: CircularProgressIndicator(),
+
+                    child: ElevatedButton(
+                      onPressed: _onTapSubmitButton,
+                      child: Icon(Icons.arrow_forward_rounded),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
@@ -95,14 +104,48 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   }
 
   void _onTapSubmitButton() {
-    /*    if (_formKey.currentState!.validate()) {
-      // TODO: Sign in with API
-    }*/
-    Navigator.pushNamed(context, PinVerificationScreen.routeName);
+    if (_formKey.currentState!.validate()) {
+      _verifyEmail();
+    }
   }
 
   void _onTapSignInButton() {
     Navigator.pushNamed(context, SignInScreen.routeName);
+  }
+
+  Future<void> _verifyEmail() async {
+    _verifyEmailInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.verifyEmailUrl(_emailController.text.trim()),
+    );
+
+    if (response.success) {
+      if (mounted) {
+        showSnackBarMessage(context, 'Verification code sent to your email.');
+        Navigator.pushNamed(
+          context,
+          PinVerificationScreen.routeName,
+          arguments: _emailController.text.trim(),
+        );
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Something went wrong. Please try again.',
+        );
+      }
+    }
+    _verifyEmailInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
 import '../utils/PasswordVisibilityIcon.dart';
 import '../utils/validators.dart';
+import '../widgets/snack_bar_message.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -24,11 +27,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+  bool _changePasswordInProgress = false;
   @override
   void initState() {
     super.initState();
-    _passwordVisible = false;
-    _confirmPasswordVisible = false;
+
   }
 
   @override
@@ -101,9 +104,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                   SizedBox(height: 20),
 
-                  ElevatedButton(
-                    onPressed: _onTapConfirmButton,
-                    child: Text('Confirm'),
+                  Visibility(
+                    visible: _changePasswordInProgress == false,
+                    replacement: CircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapConfirmButton,
+                      child: Text('Confirm'),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
@@ -141,14 +148,46 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   void _onTapConfirmButton() {
-    /*    if (_formKey.currentState!.validate()) {
-      // TODO: Sign in with API
-    }*/
-    Navigator.pushNamed(context, SignInScreen.routeName);
+    if (_formKey.currentState!.validate()) {
+      _changePassword();
+    }
   }
 
   void _onTapSignInButton() {
-    Navigator.pushNamed(context, SignInScreen.routeName);
+    Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+  }
+
+  Future<void> _changePassword() async {
+    _changePasswordInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    Map<String, String> requestBody = {
+      'password': _confirmPasswordController.text,
+    };
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.resetPasswordUrl,
+      body: requestBody,
+    );
+    _changePasswordInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+    if (response.success) {
+      if (mounted) {
+        showSnackBarMessage(context, 'Password changed successfully.');
+        Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Password change failed. Please try again.',
+        );
+      }
+    }
   }
 
   @override

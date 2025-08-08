@@ -4,6 +4,9 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
 
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
+import '../widgets/snack_bar_message.dart';
 import 'change_password_screen.dart';
 
 class PinVerificationScreen extends StatefulWidget {
@@ -18,6 +21,16 @@ class PinVerificationScreen extends StatefulWidget {
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   final TextEditingController _pinController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _verifyPinInProgress = false;
+  late String _email;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments;
+    if (args is String) {
+      _email = args;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +81,14 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
                   SizedBox(height: 20),
 
-                  ElevatedButton(
-                    onPressed: _onTapVerifyButton,
-                    child: Text('Verify'),
+                  Visibility(
+                    visible: _verifyPinInProgress == false,
+                    replacement: CircularProgressIndicator(),
+
+                    child: ElevatedButton(
+                      onPressed: _onTapVerifyButton,
+                      child: Text('Verify'),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
@@ -108,14 +126,45 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void _onTapVerifyButton() {
-    /*    if (_formKey.currentState!.validate()) {
-      // TODO: Sign in with API
-    }*/
-    Navigator.pushNamed(context, ChangePasswordScreen.routeName);
+    if (_pinController.text.trim().length == 6) {
+      _verifyPin();
+    } else {
+      showSnackBarMessage(context, 'Enter a valid 6-digit pin');
+    }
   }
 
   void _onTapSignInButton() {
     Navigator.pushNamed(context, SignInScreen.routeName);
+  }
+
+  Future<void> _verifyPin() async {
+    _verifyPinInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.verifyPinUrl(_email, _pinController.text.trim()),
+    );
+    if (response.success) {
+      if (mounted) {
+        showSnackBarMessage(context, 'Pin verified successfully.');
+        Navigator.pushNamed(context, ChangePasswordScreen.routeName);
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage.isNotEmpty
+              ? response.errorMessage
+              : 'Invalid or expired PIN',
+        );
+      }
+    }
+
+    _verifyPinInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

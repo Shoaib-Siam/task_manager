@@ -12,4 +12,7 @@ class Urls {
   static String updateTaskStatusUrl(String taskId, String status) =>
       '$_baseurl/updateTaskStatus/$taskId/$status';
   static String updateProfileUrl = '$_baseurl/ProfileUpdate';
+  static String verifyEmailUrl(String email) => '$_baseurl/RecoverVerifyEmail/$email';
+  static String verifyPinUrl(String email, String pin) => '$_baseurl/RecoverVerifyOtp/$email/$pin';
+  static String resetPasswordUrl = '$_baseurl/RecoverResetPassword';
 }
