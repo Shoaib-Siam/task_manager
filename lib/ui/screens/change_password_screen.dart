@@ -28,10 +28,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
   bool _changePasswordInProgress = false;
+  late String _email;
+  late String _otp;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    _email = args['email'];
+    _otp = args['otp'];
+  }
+
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -163,8 +174,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       setState(() {});
     }
     Map<String, String> requestBody = {
-      'password': _confirmPasswordController.text,
+      "email": _email,
+      "OTP": _otp,
+      "password": _confirmPasswordController.text,
     };
+
     NetworkResponse response = await NetworkCaller.postRequest(
       url: Urls.resetPasswordUrl,
       body: requestBody,

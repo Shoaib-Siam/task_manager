@@ -26,10 +26,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)!.settings.arguments;
-    if (args is String) {
-      _email = args;
-    }
+    final args = ModalRoute.of(context)!.settings.arguments as String;
+    _email = args;
   }
 
   @override
@@ -148,7 +146,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     if (response.success) {
       if (mounted) {
         showSnackBarMessage(context, 'Pin verified successfully.');
-        Navigator.pushNamed(context, ChangePasswordScreen.routeName);
+        Navigator.pushNamed(
+          context,
+          ChangePasswordScreen.routeName,
+          arguments: {"email": _email, "otp": _pinController.text.trim()},
+        );
       }
     } else {
       if (mounted) {

@@ -137,10 +137,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   SizedBox(height: 20),
 
                   Visibility(
-                    visible:
-                        _updateProfileInProgress == false,
-                    replacement:
-                        Center(child: CircularProgressIndicator()),
+                    visible: _updateProfileInProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: _onTapSubmitButton,
                       child: Icon(Icons.arrow_forward_rounded),
@@ -233,10 +231,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       Uint8List imageBytes = await _selectedImage!.readAsBytes();
       requestBody['photo'] = base64Encode(imageBytes);
     }
+
     NetworkResponse response = await NetworkCaller.postRequest(
       url: Urls.updateProfileUrl,
       body: requestBody,
     );
+
     _updateProfileInProgress = false;
     if (mounted) {
       setState(() {});
@@ -250,8 +250,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       AuthController.userModel?.mobileNumber =
           _mobileNumberController.text.trim();
 
-      if(_selectedImage != null){
-        AuthController.userModel?.photo = base64Encode(await _selectedImage!.readAsBytes());
+      if (_selectedImage != null) {
+        AuthController.userModel?.photo = base64Encode(
+          await _selectedImage!.readAsBytes(),
+        );
       }
       await AuthController.saveUserData(
         AuthController.userModel!,
@@ -260,7 +262,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
       if (mounted) {
         showSnackBarMessage(context, 'Profile updated successfully');
-        setState(() {});
       }
     } else {
       if (mounted) {
