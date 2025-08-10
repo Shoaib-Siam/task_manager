@@ -45,6 +45,11 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
                       onStatusUpdate: () {
                         _getProgressTaskList();
                       },
+                      onDelete: () {
+                        setState(() {
+                          _progressTaskList.removeAt(index);
+                        });
+                      },
                     );
                   },
                 ),

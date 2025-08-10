@@ -77,6 +77,12 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                                 _getNewTaskList();
                                 _getTaskStatusCountList();
                               },
+                              onDelete: () {
+                                setState(() {
+                                  _newTaskList.removeAt(index);
+                                });
+                                _getTaskStatusCountList();
+                              },
                             );
                           },
                         ),
