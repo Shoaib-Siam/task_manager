@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/user_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
@@ -176,11 +177,15 @@ class _SignInScreenState extends State<SignInScreen> {
       if (mounted) {
         showSnackBarMessage(context, 'Sign in Successful');
 
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          MainNavHolderScreen.routeName,
-          (predicate) => false,
-        );
+        // Navigator.pushNamedAndRemoveUntil(
+        //   context,
+        //   MainNavHolderScreen.routeName,
+        //   (predicate) => false,
+        // );
+
+        // Get.to(() => const MainNavHolderScreen());
+        // Get.toNamed(MainNavHolderScreen.routeName);
+        Get.offAllNamed(MainNavHolderScreen.routeName);
       }
     } else {
       if (mounted) {
