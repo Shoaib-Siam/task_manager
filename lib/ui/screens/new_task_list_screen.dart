@@ -163,5 +163,6 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     // Navigator.pushNamed(context, AddNewTaskScreen.routeName);
     //Get.to(() => AddNewTaskScreen());
     Get.toNamed(AddNewTaskScreen.routeName);
+
   }
 }
