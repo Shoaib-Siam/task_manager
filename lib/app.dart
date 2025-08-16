@@ -57,25 +57,24 @@ class TaskManagerApp extends StatelessWidget {
           ),
         ),
         textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.green,
-          ),
+          style: TextButton.styleFrom(foregroundColor: Colors.green),
         ),
       ),
       debugShowCheckedModeBanner: false,
       title: 'Task Manager',
       initialRoute: '/',
       routes: {
-        SplashScreen.routeName : (context) => SplashScreen(),
-        SignInScreen.routeName : (context) => SignInScreen(),
-        SignUpScreen.routeName : (context) => SignUpScreen(),
-        ForgotPasswordEmailScreen.routeName : (context) => ForgotPasswordEmailScreen(),
-        PinVerificationScreen.routeName : (context) => PinVerificationScreen(),
-        ChangePasswordScreen.routeName : (context) => ChangePasswordScreen(),
-        MainNavHolderScreen.routeName : (context) => MainNavHolderScreen(),
-        AddNewTaskScreen.routeName : (context) => AddNewTaskScreen(),
-        UpdateProfileScreen.routeName : (context) => UpdateProfileScreen(),
-      }
+        SplashScreen.routeName: (context) => SplashScreen(),
+        SignInScreen.routeName: (context) => SignInScreen(),
+        SignUpScreen.routeName: (context) => SignUpScreen(),
+        ForgotPasswordEmailScreen.routeName:
+            (context) => ForgotPasswordEmailScreen(),
+        PinVerificationScreen.routeName: (context) => PinVerificationScreen(),
+        ChangePasswordScreen.routeName: (context) => ChangePasswordScreen(),
+        MainNavHolderScreen.routeName: (context) => MainNavHolderScreen(),
+        AddNewTaskScreen.routeName: (context) => AddNewTaskScreen(),
+        UpdateProfileScreen.routeName: (context) => UpdateProfileScreen(),
+      },
     );
   }
 }
