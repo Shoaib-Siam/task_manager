@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 
 import '../../data/models/task_model.dart';
@@ -160,8 +159,6 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
   }
 
   void _onTapAddNewTaskButton() {
-    // Navigator.pushNamed(context, AddNewTaskScreen.routeName);
-    //Get.to(() => AddNewTaskScreen());
-    Get.toNamed(AddNewTaskScreen.routeName);
+    Navigator.pushNamed(context, AddNewTaskScreen.routeName);
   }
 }
