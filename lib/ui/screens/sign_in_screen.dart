@@ -181,6 +181,7 @@ class _SignInScreenState extends State<SignInScreen> {
           MainNavHolderScreen.routeName,
           (predicate) => false,
         );
+
       }
     } else {
       if (mounted) {
