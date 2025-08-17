@@ -1,14 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/ui/controllers/sign_in_controller.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_bg.dart';
-
-import '../../data/urls.dart';
-import '../controllers/auth_controller.dart';
 import '../utils/validators.dart';
 import '../widgets/snack_bar_message.dart';
 import 'forgot_password_email_screen.dart';
@@ -27,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _signInInProgress = false;
+  final SignInController _signInController = SignInController();
 
   bool _passwordVisible = false;
   @override
@@ -86,15 +82,22 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  Visibility(
-                    visible:
-                        _signInInProgress == false, //signup button will visible
-                    replacement:
-                        CenteredCircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
-                    child: ElevatedButton(
-                      onPressed: _signInInProgress ? null : _onTapSignInButton,
-                      child: Icon(Icons.arrow_forward_rounded),
-                    ),
+                  GetBuilder(
+                    init: _signInController,
+                    builder: (controller) {
+                      return Visibility(
+                        visible: controller.signInInProgress == false,
+                        replacement:
+                            CenteredCircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
+                        child: ElevatedButton(
+                          onPressed:
+                              controller.signInInProgress
+                                  ? null
+                                  : _onTapSignInButton,
+                          child: Icon(Icons.arrow_forward_rounded),
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(height: 20),
                   Center(
@@ -149,52 +152,15 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _signIn() async {
-    _signInInProgress = true;
-    setState(() {});
-
-    Map<String, String> requestBody = {
-      "email": _emailController.text.trim(),
-      "password": _passwordController.text,
-    };
-
-    NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.loginUrl,
-      body: requestBody,
-      isFromLogin: true,
+    final bool isSuccessful = await _signInController.signIn(
+      _emailController.text.trim(),
+      _passwordController.text,
     );
-    _signInInProgress = false;
-    setState(() {});
-
-    if (response.success) {
-      _emailController.clear();
-      _passwordController.clear();
-
-      UserModel userModel = UserModel.fromJson(response.body['data']);
-      String token = response.body['token'];
-
-      await AuthController.saveUserData(userModel, token);
-
-      if (mounted) {
-        showSnackBarMessage(context, 'Sign in Successful');
-
-        // Navigator.pushNamedAndRemoveUntil(
-        //   context,
-        //   MainNavHolderScreen.routeName,
-        //   (predicate) => false,
-        // );
-
-        // Get.to(() => const MainNavHolderScreen());
-        // Get.toNamed(MainNavHolderScreen.routeName);
-        Get.offAllNamed(MainNavHolderScreen.routeName);
-      }
+    if (isSuccessful) {
+      Get.offAllNamed(MainNavHolderScreen.routeName);
     } else {
       if (mounted) {
-        showSnackBarMessage(
-          context,
-          response.errorMessage.isNotEmpty
-              ? response.errorMessage
-              : 'Sign in failed. Please try again.',
-        );
+        showSnackBarMessage(context, _signInController.errorMessage!);
       }
     }
   }
