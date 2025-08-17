@@ -10,6 +10,8 @@ import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
+import 'controller_binder.dart';
+
 class TaskManagerApp extends StatelessWidget {
   const TaskManagerApp({super.key});
 
@@ -76,6 +78,7 @@ class TaskManagerApp extends StatelessWidget {
         AddNewTaskScreen.routeName: (context) => AddNewTaskScreen(),
         UpdateProfileScreen.routeName: (context) => UpdateProfileScreen(),
       },
+      initialBinding: ControllerBinder(),
     );
   }
 }

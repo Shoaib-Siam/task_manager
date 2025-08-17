@@ -6,17 +6,15 @@ import '../../data/urls.dart';
 import 'auth_controller.dart';
 
 class SignInController extends GetxController {
-  bool _signInInProgress = false;
+  bool _inProgress = false;
+  bool get inProgress => _inProgress;
 
   String? _errorMessage;
-
-  bool get signInInProgress => _signInInProgress;
-
   String? get errorMessage => _errorMessage;
 
   Future<bool> signIn(String email, String password) async {
     bool isSuccessful = false;
-    _signInInProgress = true;
+    _inProgress = true;
     update();
 
     Map<String, String> requestBody = {"email": email, "password": password};
@@ -38,7 +36,7 @@ class SignInController extends GetxController {
       _errorMessage = response.errorMessage;
     }
 
-    _signInInProgress = false;
+    _inProgress = false;
     update();
     return isSuccessful;
   }

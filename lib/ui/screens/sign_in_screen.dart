@@ -86,12 +86,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     init: _signInController,
                     builder: (controller) {
                       return Visibility(
-                        visible: controller.signInInProgress == false,
+                        visible: controller.inProgress == false,
                         replacement:
                             CenteredCircularProgressIndicator(), //after 1tap signup button will not visible and progress indicator will visible
                         child: ElevatedButton(
                           onPressed:
-                              controller.signInInProgress
+                              controller.inProgress
                                   ? null
                                   : _onTapSignInButton,
                           child: Icon(Icons.arrow_forward_rounded),
